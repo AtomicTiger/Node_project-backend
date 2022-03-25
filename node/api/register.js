@@ -1,26 +1,35 @@
 const mongoose = require('mongoose');
-const { Router } = require('express');
+const express = require('express');
+const app = express();
 const  User = require('../models/user');
 const bcrypt = require("bcrypt");
+const bodyParser = require('body-parser');  
 
-const router = Router();
-
-const register = router.post("/register", async (req,res) =>{
-    const salt = await bcrypt.genSalt(10);
-    if(req.body.Password == req.body.Password_2){  
-      db.mycol.insert({ 
-          Name: req.body.login, 
-          Surename: req.body.secname,
-          Age:req.body.age,
-          Password: await bcrypt.hash(req.body.pass, salt),
-          Email : req.body.email,
-      });
-      console.log("User's auto-generated ID:", user);
-      res.json({ emial: req.body.email });
+module.exports = (app) => {
+  app.post("/register", async (req, res) => {
+    try {
+  
+      const user = await User.findOne({ email: req.body.email });
+      console.log(req.body);
+  
+      if (user) {
+        res.status(400).json({email: "Ten email jest już zajęty"});
+      }
+      else {
+        const newUser = new User({ 
+          name: req.body.name,
+          surename: req.body.surename,
+          age: req.body.age,
+          email: req.body.email,
+          password: req.body.pass
+        });
+        newUser.save();
+        res.status(200).json({msg: newUser});
+      }
+  
+    } 
+    catch (err) {
+      console.error(err);
     }
-    else{
-      console.log("pass is not the same")
-    }
-});
-
-module.exports = register
+  });
+}

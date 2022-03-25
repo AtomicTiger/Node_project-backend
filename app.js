@@ -7,26 +7,24 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 
-//tu api 
-const Register = require('./node/api/register');
-const Login = require('./node/api/login')
-
-dotenv.config();
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname)));
 app.set('view engine', 'ejs');
+app.use(bodyParser.json());
+
+//tu api 
+require('./node/api/register')(app);
+require('./node/api/login')(app);
+
+dotenv.config();
 
 // Odpala serwer Node (Wchodzisz przez localhost:3001)
 app.listen(3001, async () => {
     console.log("Server is running on localhost3001");
 });
 
-mongoose.connect('',{
+mongoose.connect('mongodb+srv://praktyki:praktyki2021@development.wtktz.mongodb.net/3DTE',{
     useNewUrlParser: true,
-    useFindAndModify: false,
     useUnifiedTopology: true
 })
 
-app.post("/register", Register)
-
-app.post("/login", Login)
