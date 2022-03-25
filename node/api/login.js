@@ -1,4 +1,4 @@
-const { Sequelize, Model, DataTypes } = require('sequelize');
+const mongoose = require("mongoose");
 const { Router } = require('express');
 const  User = require('../models/user');
 const bcrypt = require("bcrypt");
@@ -6,9 +6,10 @@ const router = Router();
 
 module.exports = (app) => {
   app.post('/login',async(req,res,next)=>{
-    const user = await User.findOne({ where : {Nick : req.body.login }});
+    const user = await User.findOne({ 'username' : req.body.username });
+    console.log(user);
     if(user){
-       const password_valid = await bcrypt.compare(req.body.pass,user.Password);
+       const password_valid = await bcrypt.compareSync(req.body.pass, user.password);
        if(password_valid){
         res.send('you are in');
        } else {
