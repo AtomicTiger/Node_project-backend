@@ -8,10 +8,7 @@ const bodyParser = require('body-parser');
 module.exports = (app) => {
   app.post("/register", async (req, res) => {
     try {
-  
       const user = await User.findOne({ email: req.body.email });
-      console.log(req.body);
-  
       if (user) {
         res.status(400).json({email: "Ten email jest już zajęty"});
       }
@@ -21,7 +18,7 @@ module.exports = (app) => {
           surename: req.body.surename,
           age: req.body.age,
           email: req.body.email,
-          password: req.body.pass
+          password: bcrypt.hashSync(req.body.pass, 10)
         });
         newUser.save();
         res.status(200).json({msg: newUser});
