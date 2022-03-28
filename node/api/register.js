@@ -9,7 +9,7 @@ module.exports = (app) => {
   app.post("/register", async (req, res) => {
     try {
       const user = await User.findOne({ username: req.body.username });
-      if (user.username != req.body.username) {
+      if (user == req.body.username) {
         res.status(400).json({username: "Ta nazwa jest już zajęty"});
       }
       else {
